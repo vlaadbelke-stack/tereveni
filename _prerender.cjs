@@ -22,8 +22,11 @@ async function launchBrowser() {
     const sparticuz = require('@sparticuz/chromium');
     const chromium = sparticuz.default || sparticuz;
     const { chromium: pw } = require('playwright-core');
+    /* --single-process і --no-zygote приходять із набору для Puppeteer;
+       Playwright із ними стартує і одразу втрачає сторінку. */
+    const args = chromium.args.filter((a) => a !== '--single-process' && a !== '--no-zygote');
     return pw.launch({
-      args: chromium.args,
+      args,
       executablePath: await chromium.executablePath(),
       headless: true,
     });

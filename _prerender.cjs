@@ -12,7 +12,11 @@
 const http = require('http');
 const fs = require('fs');
 const path = require('path');
-const { chromium } = require('C:/Claude/clients/kodmezczyznynetpl/node_modules/playwright');
+/* Playwright: у збірці Vercel — свій із devDependencies, локально — той,
+   що вже стоїть у сусідньому проєкті (щоб не тягнути браузер удруге). */
+let chromium;
+try { ({ chromium } = require('playwright')); }
+catch { ({ chromium } = require('C:/Claude/clients/kodmezczyznynetpl/node_modules/playwright')); }
 
 const DIST = process.env.DIST_DIR ? path.resolve(process.env.DIST_DIR) : path.join(__dirname, 'dist');
 const PORT = 4419;

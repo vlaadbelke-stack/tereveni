@@ -1,0 +1,9 @@
+node_modules
+dist
+.vercel
+_backup
+_source
+*.log
+
+# службові скріни й чернетки перевірок, які лежали в папці
+_*.png

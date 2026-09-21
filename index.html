@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="uk">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#1d1d1b" />
+    <title>Tereveni Studio — робимо контент, який дивляться</title>
+    <meta name="description" content="Подкаст-студія та продакшн у Києві. Знімаємо подкасти й YouTube-шоу під ключ, продюсуємо канали від ідеї до запуску. Обговорімо ваш проєкт." />
+    <meta property="og:title" content="Tereveni Studio — робимо контент, який дивляться" />
+    <meta property="og:description" content="Подкаст-студія та продакшн у Києві: подкасти, YouTube-шоу, продюсування каналів під ключ." />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://tereveni.studio/" />
+    <meta property="og:image" content="https://tereveni.studio/og.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:locale" content="uk_UA" />
+    <meta property="og:site_name" content="ТЕРЕВЕНІ · студія" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Tereveni Studio — робимо контент, який дивляться" />
+    <meta name="twitter:description" content="Подкаст-студія та продакшн у Києві: подкасти, YouTube-шоу, продюсування каналів під ключ." />
+    <meta name="twitter:image" content="https://tereveni.studio/og.jpg" />
+    <link rel="canonical" href="https://tereveni.studio/" />
+    <!-- preload саме постера відео: він і є LCP-елемент. Раніше тут висів /pano.webp
+         від старого героя — 168 КБ з найвищим пріоритетом, які нікуди не йшли. -->
+    <link rel="preload" as="image" href="/hero-loop-poster.jpg" fetchpriority="high" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

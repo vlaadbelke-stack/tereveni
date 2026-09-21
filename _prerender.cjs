@@ -12,11 +12,27 @@
 const http = require('http');
 const fs = require('fs');
 const path = require('path');
-/* Playwright: у збірці Vercel — свій із devDependencies, локально — той,
-   що вже стоїть у сусідньому проєкті (щоб не тягнути браузер удруге). */
-let chromium;
-try { ({ chromium } = require('playwright')); }
-catch { ({ chromium } = require('C:/Claude/clients/kodmezczyznynetpl/node_modules/playwright')); }
+/* Браузер для пререндеру.
+   На Vercel системного Chromium немає і звичайна збірка Playwright падає на
+   бібліотеках (libnspr4.so), тому там беремо @sparticuz/chromium — збірку
+   під контейнери Amazon Linux. Локально працює звичайний Playwright. */
+const IS_CI = !!(process.env.VERCEL || process.env.CI);
+async function launchBrowser() {
+  if (IS_CI) {
+    const sparticuz = require('@sparticuz/chromium');
+    const chromium = sparticuz.default || sparticuz;
+    const { chromium: pw } = require('playwright-core');
+    return pw.launch({
+      args: chromium.args,
+      executablePath: await chromium.executablePath(),
+      headless: true,
+    });
+  }
+  let pw;
+  try { pw = require('playwright').chromium; }
+  catch { pw = require('C:/Claude/clients/kodmezczyznynetpl/node_modules/playwright').chromium; }
+  return pw.launch();
+}
 
 const DIST = process.env.DIST_DIR ? path.resolve(process.env.DIST_DIR) : path.join(__dirname, 'dist');
 const PORT = 4419;
@@ -71,7 +87,7 @@ const outFile = (route) => (route === '/' ? path.join(DIST, 'index.html') : path
   }
 
   await new Promise((r) => server.listen(PORT, r));
-  const browser = await chromium.launch();
+  const browser = await launchBrowser();
   const rows = [];
 
   for (const route of ROUTES) {

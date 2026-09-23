@@ -97,6 +97,9 @@ const outFile = (route) => (route === '/' ? path.join(DIST, 'index.html') : path
     const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
     const errors = [];
     page.on('pageerror', (e) => errors.push(String(e).slice(0, 120)));
+    /* Піксель Meta: під час збірки не шлемо PageView і не лишаємо в HTML тег fbevents.js,
+       який вставив сніпет, інакше в браузері бібліотека вантажилась би двічі. */
+    await page.route(/facebook\.(net|com)/, (r) => r.abort());
     await page.goto('http://localhost:' + PORT + route, { waitUntil: 'networkidle', timeout: 45000 });
     /* Анімації Framer Motion стартують із opacity/translate — даємо кадрам осісти,
        інакше в HTML впечеться стан «ще не показано». */
@@ -106,7 +109,10 @@ const outFile = (route) => (route === '/' ? path.join(DIST, 'index.html') : path
     await page.evaluate(() => window.scrollTo(0, 0));
     await page.waitForTimeout(400);
 
-    const html = await page.evaluate(() => '<!doctype html>\n' + document.documentElement.outerHTML);
+    const html = await page.evaluate(() => {
+      document.querySelectorAll('script[src*="fbevents.js"]').forEach((s) => s.remove());
+      return '<!doctype html>\n' + document.documentElement.outerHTML;
+    });
     const info = await page.evaluate(() => ({
       title: document.title,
       desc: (document.head.querySelector('meta[name="description"]')?.getAttribute('content') || '').length,

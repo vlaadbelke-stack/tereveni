@@ -94,8 +94,14 @@ const outFile = (route) => (route === '/' ? path.join(DIST, 'index.html') : path
   const rows = [];
 
   for (const route of ROUTES) {
+   /* На Vercel браузер зрідка не дочікується сторінки або падає, і вся збірка
+      червоніє через один маршрут. Тому до 3 спроб на маршрут. */
+   for (let attempt = 1; attempt <= 3; attempt++) {
     const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
     const errors = [];
+    try {
+    // відео в HTML не потрапляє, а його стрім тримає мережу і заважає networkidle
+    await page.route(/\.mp4(\?|$)/, (r) => r.abort());
     page.on('pageerror', (e) => errors.push(String(e).slice(0, 120)));
     /* Піксель Meta: під час збірки не шлемо PageView і не лишаємо в HTML тег fbevents.js,
        який вставив сніпет, інакше в браузері бібліотека вантажилась би двічі. */
@@ -119,6 +125,8 @@ const outFile = (route) => (route === '/' ? path.join(DIST, 'index.html') : path
       canon: document.head.querySelector('link[rel="canonical"]')?.getAttribute('href') || '',
       text: (document.getElementById('root')?.innerText || '').replace(/\s+/g, ' ').trim().length,
     }));
+    const good = info.text > 400 && info.title && info.desc > 50 && info.canon && !errors.length;
+    if (!good && attempt < 3) { console.log('повтор', route, attempt, errors.join(' | ')); await page.close(); continue; }
     rows.push({ route, ...info, bytes: html.length, errors });
 
     if (!checkOnly) {
@@ -127,6 +135,13 @@ const outFile = (route) => (route === '/' ? path.join(DIST, 'index.html') : path
       fs.writeFileSync(file, html, 'utf8');
     }
     await page.close();
+    break;
+    } catch (e) {
+      console.log('помилка', route, 'спроба', attempt, String(e).slice(0, 200));
+      await page.close().catch(() => {});
+      if (attempt === 3) throw e;
+    }
+   }
   }
 
   await browser.close();

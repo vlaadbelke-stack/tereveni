@@ -15,7 +15,13 @@ export default function ServicePage() {
   useSeo(data
     /* Превʼю для шеру — окремий JPG 1200×630 у public/og/, не hero-webp:
        фейсбук і частина месенджерів WebP у превʼю не показують. */
-    ? { title: data.title, description: data.intro, path: `/service/${data.slug}`, image: `${SITE_URL}/og/${data.slug}.jpg` }
+    ? {
+        title: data.seoTitle, description: data.seoDesc, path: `/service/${data.slug}`, image: `${SITE_URL}/og/${data.slug}.jpg`,
+        jsonLd: {
+          '@context': 'https://schema.org', '@type': 'FAQPage',
+          mainEntity: data.faq.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })),
+        },
+      }
     : { title: 'Послугу не знайдено', description: 'Такої послуги немає.', path: `/service/${slug ?? ''}`, noindex: true });
 
   useEffect(() => { window.scrollTo(0, 0); }, [slug]);
@@ -61,7 +67,7 @@ export default function ServicePage() {
 
       {/* HERO */}
       <header className="sp-hero">
-        <img className="sp-hero-bg" src={data.hero} alt="" />
+        <img className="sp-hero-bg" src={data.hero} alt={`${data.title} у студії Теревені, Київ`} />
         <div className="sp-hero-scrim" />
         {/* Оранжеве світіння прибрано (Влад, 5 серп): на реальному кадрі студії воно
             читалось як пляма-засвітка, а не як акцент. У фінальному CTA лишається. */}

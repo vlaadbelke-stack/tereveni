@@ -15,7 +15,7 @@ import { useEffect } from 'react';
 export const SITE_URL = 'https://tereveni.studio';
 export const SITE_NAME = 'ТЕРЕВЕНІ · студія';
 const DEFAULT_IMAGE = `${SITE_URL}/og.jpg`;
-const TITLE_SUFFIX = ' — Tereveni Studio';
+const TITLE_SUFFIX = ' | Tereveni Studio';
 
 export type SeoInput = {
   title: string;         // без суфікса — він додається сам
@@ -23,6 +23,7 @@ export type SeoInput = {
   path: string;          // від кореня, напр. '/pro-nas'
   image?: string;        // абсолютний URL; за замовчуванням og.jpg
   noindex?: boolean;     // для адмінки
+  jsonLd?: object;       // розмітка schema.org саме цієї сторінки (FAQ послуги)
 };
 
 function setMeta(attr: 'name' | 'property', key: string, content: string) {
@@ -56,6 +57,9 @@ export function applySeo(s: SeoInput) {
   setMeta('property', 'og:description', s.description);
   setMeta('property', 'og:url', url);
   setMeta('property', 'og:image', image);
+  // усі картки в public/og і og.jpg зроблені 1200×630
+  setMeta('property', 'og:image:width', '1200');
+  setMeta('property', 'og:image:height', '630');
   setMeta('property', 'og:type', 'website');
   setMeta('property', 'og:locale', 'uk_UA');
   setMeta('property', 'og:site_name', SITE_NAME);
@@ -65,29 +69,40 @@ export function applySeo(s: SeoInput) {
   setMeta('name', 'twitter:image', image);
   setLink('canonical', url);
   setMeta('name', 'robots', s.noindex ? 'noindex, nofollow' : 'index, follow');
+
+  let ld = document.getElementById('page-ld');
+  if (s.jsonLd) {
+    if (!ld) {
+      ld = document.createElement('script');
+      ld.id = 'page-ld';
+      ld.setAttribute('type', 'application/ld+json');
+      document.head.appendChild(ld);
+    }
+    ld.textContent = JSON.stringify(s.jsonLd);
+  } else ld?.remove();
 }
 
 export function useSeo(s: SeoInput) {
   // Залежності — примітиви, щоб хук не смикався на кожен рендер батька
-  useEffect(() => { applySeo(s); }, [s.title, s.description, s.path, s.image, s.noindex]);
+  useEffect(() => { applySeo(s); }, [s.title, s.description, s.path, s.image, s.noindex, JSON.stringify(s.jsonLd)]);
 }
 
 /* Тексти для сторінок без власних даних. Послуги беруть title/intro
    зі services.ts, тому їх тут нема. */
 export const PAGE_SEO = {
   home: {
-    title: 'Tereveni Studio — робимо контент, який дивляться',
-    description: 'Подкаст-студія та продакшн у Києві. Знімаємо подкасти й YouTube-шоу під ключ, продюсуємо канали від ідеї до запуску. Три локації в центрі, команда і техніка в ціні.',
+    title: 'Подкаст-студія в Києві: подкасти і YouTube | Tereveni',
+    description: 'Подкаст-студія в центрі Києва. Знімаємо подкасти й YouTube-шоу під ключ: 4K-камери, 20+ приладів світла, звук і монтаж. Команда в ціні. Консультація безкоштовно.',
     path: '/',
   },
   about: {
-    title: 'Про студію Теревені',
-    description: 'Хто ми і як працюємо: подкаст-студія в центрі Києва, з якою знімають канали на сотні тисяч глядачів. Три локації, команда, 4K-камери і 20+ приладів світла.',
+    title: 'Про подкаст-студію Теревені в Києві',
+    description: 'Подкаст-студія на Бульварно-Кудрявській, 22 у центрі Києва. Пʼять локацій, 4K-камери, 20+ приладів світла і команда, з якою знімають канали на сотні тисяч.',
     path: '/pro-nas',
   },
   portfolio: {
-    title: 'Наші роботи — подкасти та YouTube-шоу',
-    description: 'Подкасти, інтервʼю та YouTube-шоу, зняті й змонтовані в студії Теревені. Реальні випуски реальних каналів: дивіться, як це виглядає в готовому вигляді.',
+    title: 'Портфоліо: подкасти та YouTube-шоу',
+    description: 'Подкасти, інтервʼю та YouTube-шоу, зняті й змонтовані в студії Теревені в Києві. Реальні випуски реальних каналів у готовому вигляді.',
     path: '/portfolio',
   },
   admin: {

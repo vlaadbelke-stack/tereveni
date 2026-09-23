@@ -23,7 +23,6 @@ export type SeoInput = {
   path: string;          // від кореня, напр. '/pro-nas'
   image?: string;        // абсолютний URL; за замовчуванням og.jpg
   noindex?: boolean;     // для адмінки
-  jsonLd?: object;       // розмітка schema.org саме цієї сторінки (FAQ послуги)
 };
 
 function setMeta(attr: 'name' | 'property', key: string, content: string) {
@@ -69,22 +68,11 @@ export function applySeo(s: SeoInput) {
   setMeta('name', 'twitter:image', image);
   setLink('canonical', url);
   setMeta('name', 'robots', s.noindex ? 'noindex, nofollow' : 'index, follow');
-
-  let ld = document.getElementById('page-ld');
-  if (s.jsonLd) {
-    if (!ld) {
-      ld = document.createElement('script');
-      ld.id = 'page-ld';
-      ld.setAttribute('type', 'application/ld+json');
-      document.head.appendChild(ld);
-    }
-    ld.textContent = JSON.stringify(s.jsonLd);
-  } else ld?.remove();
 }
 
 export function useSeo(s: SeoInput) {
   // Залежності — примітиви, щоб хук не смикався на кожен рендер батька
-  useEffect(() => { applySeo(s); }, [s.title, s.description, s.path, s.image, s.noindex, JSON.stringify(s.jsonLd)]);
+  useEffect(() => { applySeo(s); }, [s.title, s.description, s.path, s.image, s.noindex]);
 }
 
 /* Тексти для сторінок без власних даних. Послуги беруть title/intro
@@ -92,7 +80,7 @@ export function useSeo(s: SeoInput) {
 export const PAGE_SEO = {
   home: {
     title: 'Подкаст-студія в Києві: подкасти і YouTube | Tereveni',
-    description: 'Подкаст-студія в центрі Києва. Знімаємо подкасти й YouTube-шоу під ключ: 4K-камери, 20+ приладів світла, звук і монтаж. Команда в ціні. Консультація безкоштовно.',
+    description: 'Подкаст-студія в центрі Києва. Знімаємо подкасти й YouTube-шоу під ключ: 4K-камери, 20+ приладів світла, звук і монтаж. Команда в ціні.',
     path: '/',
   },
   about: {

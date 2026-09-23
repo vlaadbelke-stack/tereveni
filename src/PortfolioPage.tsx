@@ -97,7 +97,7 @@ export default function PortfolioPage() {
                   <button key={w.id} className={`hall-item ${i === active ? 'on' : ''}`}
                     onClick={() => setActive(i)} aria-current={i === active}>
                     <span className="hall-thumb">
-                      <img src={ytThumb(w.yt)} onError={(e) => { (e.target as HTMLImageElement).src = w.img; }} alt="" loading="lazy" />
+                      <img src={ytThumb(w.yt)} onError={(e) => { (e.target as HTMLImageElement).src = w.img; }} alt={w.t} loading="lazy" />
                       {i === active && <span className="hall-now" aria-hidden="true" />}
                     </span>
                     <span className="hall-txt">

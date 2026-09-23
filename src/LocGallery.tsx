@@ -240,7 +240,7 @@ export default function LocGallery({ bookUrl }: { bookUrl: string }) {
       style={{ width: faceWidth, transform: `rotateY(${slots[i] * faceAngle}deg) translateZ(${radius}px)` }}
       onClick={() => onFaceClick(i, s)}
     >
-      <img src={s.img.replace('/gallery/', '/gallery/t-')} alt="" loading={i < 7 || warm ? 'eager' : 'lazy'} decoding="async" draggable={false} />
+      <img src={s.img.replace('/gallery/', '/gallery/t-')} alt={s.t ? `${s.t}, локація ${s.loc}` : `Локація ${s.loc}`} loading={i < 7 || warm ? 'eager' : 'lazy'} decoding="async" draggable={false} />
     </button>
   )), [faceWidth, radius, faceAngle, slots, onFaceClick, warm]);
 
@@ -305,7 +305,7 @@ export default function LocGallery({ bookUrl }: { bookUrl: string }) {
           <motion.div className="lg3-full" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setActive(null)}>
             <button className="vmodal-x" onClick={() => setActive(null)} aria-label="Закрити">×</button>
             <motion.img
-              src={active.img} alt="" onClick={(e) => e.stopPropagation()}
+              src={active.img} alt={active.t ? `${active.t}, локація ${active.loc}` : `Локація ${active.loc}`} onClick={(e) => e.stopPropagation()}
               initial={{ scale: 0.92, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.95, opacity: 0 }}
               transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
             />

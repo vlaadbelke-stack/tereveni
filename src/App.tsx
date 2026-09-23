@@ -544,8 +544,9 @@ export default function App() {
         <div className="vhero-scrim" />
         <div className="wrap hero-in vhero-in">
           <motion.div className="vhero-copy" initial={{ opacity: 0, y: 26 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, delay: 0.35, ease: [0.16, 1, 0.3, 1] }}>
-            <div className="hero-rec"><span className="rec" /> Подкаст-студія · продакшн · Київ</div>
-            <h1>Робимо контент,<br />який <span className="box">дивляться</span></h1>
+            {/* h1 несе ключ «подкаст-студія у Києві»; візуально це той самий дрібний рядок над гаслом */}
+            <h1><span className="hero-rec"><span className="rec" /> Подкаст-студія у Києві · продакшн</span>
+              Робимо контент,<br />який <span className="box">дивляться</span></h1>
           </motion.div>
           <motion.div className="hero-actions" initial={{ opacity: 0, y: 26 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, delay: 0.55, ease: [0.16, 1, 0.3, 1] }}>
             <a {...bookProps} className="btn btn-primary btn-lg"><span className="dot" /> Забронювати студію</a>

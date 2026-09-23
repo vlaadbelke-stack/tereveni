@@ -23,6 +23,8 @@ export type ServicePageData = {
   gallery: SvcGallery[];
   ctaLine: string;
   compare?: SvcCompare[];
+  seoTitle: string;      // title вкладки й видачі, суфікс « | Tereveni Studio» додається сам
+  seoDesc: string;       // до 155 символів, інакше Google ріже
 };
 
 export const SERVICE_ORDER = ['production', 'podcast', 'youtube-show', 'content'];
@@ -30,7 +32,9 @@ export const SERVICE_ORDER = ['production', 'podcast', 'youtube-show', 'content'
 export const SERVICE_PAGES: Record<string, ServicePageData> = {
   production: {
     slug: 'production',
-    title: 'YouTube під ключ',
+    seoTitle: 'YouTube-канал під ключ: продакшн у Києві',
+    seoDesc: 'Запускаємо YouTube-канал для бізнесу під ключ: стратегія, сценарій, зйомка в студії в центрі Києва, монтаж і просування. Перша розмова безкоштовно.',
+    title: 'YouTube-канал під ключ',
     tagline: 'Ваш YouTube-канал як актив — заявки, не лайки',
     intro: 'Канал, що працює на ваш бізнес і приводить заявки щомісяця. Від вас — лише ідея: команда, студія та обладнання в центрі Києва вже готові.',
     hero: '/sp-hero-production.webp',
@@ -79,6 +83,8 @@ export const SERVICE_PAGES: Record<string, ServicePageData> = {
   },
   podcast: {
     slug: 'podcast',
+    seoTitle: 'Запис подкасту в студії в Києві під ключ',
+    seoDesc: 'Запис відеоподкасту в Києві: 4K з кількох ракурсів, петлички, 20+ приладів світла, до 5 людей у кадрі. Монтаж, звук і обкладинки під ключ.',
     title: 'Подкаст під ключ',
     tagline: 'Готовий подкаст за один день — від вас лише ідея',
     intro: 'Канал, який робить вас впізнаваним експертом і приводить заявки. Ви даєте тему — команда, студія й монтаж уже готові.',
@@ -118,6 +124,8 @@ export const SERVICE_PAGES: Record<string, ServicePageData> = {
   },
   'youtube-show': {
     slug: 'youtube-show',
+    seoTitle: 'Зйомка YouTube-шоу в Києві під ключ',
+    seoDesc: 'YouTube-шоу рівня топ-каналів без своєї команди й техніки. Сценарій, зйомка в студії в Києві, монтаж і публікація. Від вас лише ідея.',
     title: 'YouTube-шоу',
     tagline: 'Шоу, яке робить вас впізнаваним і приводить заявки',
     intro: 'Своє YouTube-шоу рівня топ-каналів — без власної команди й техніки. Від вас лише ідея: сценарій, зйомку, монтаж і публікацію беремо на себе.',
@@ -157,6 +165,8 @@ export const SERVICE_PAGES: Record<string, ServicePageData> = {
   },
   content: {
     slug: 'content',
+    seoTitle: 'Відеоконтент для бізнесу під ключ, Київ',
+    seoDesc: 'Регулярний відеоконтент для бренду: зйомка в студії в центрі Києва, монтаж під YouTube, Reels і Shorts. Команда і техніка вже в студії.',
     title: 'Контент під ключ',
     tagline: 'Ви — в кадрі. Решту робить студія',
     intro: 'Регулярний потік відео, що будує бренд і приводить заявки. Від вас — лише ідея: команда, світло й техніка вже в студії.',

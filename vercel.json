@@ -91,6 +91,17 @@
   "trailingSlash": false,
   "redirects": [
     {
+      "source": "/",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.tereveni.studio"
+        }
+      ],
+      "destination": "https://tereveni.studio/",
+      "permanent": true
+    },
+    {
       "source": "/:path*",
       "has": [
         {

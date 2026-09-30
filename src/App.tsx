@@ -4,6 +4,7 @@ import LocGallery from './LocGallery';
 import QuizModal from './QuizModal';
 import { MaskTitle, ParallaxBg } from './Motion';
 import { checkContact } from './validate';
+import { track } from './track';
 import { useWorks, ytThumb, type Work } from './works';
 import { STUDIO_ADDRESS, STUDIO_MAPS_URL } from './studio';
 import { useSeo, PAGE_SEO } from './seo';
@@ -192,6 +193,7 @@ export function ContactForm() {
         body: JSON.stringify({ name, contact: chk.value, types, hp }),
       });
       if (!r.ok) throw new Error(String(r.status));
+      track('generate_lead', { form: 'contact' });
       setSent(true);
     } catch {
       setErr('Не вдалося надіслати. Спробуйте ще раз або напишіть у Telegram — відповімо там.');

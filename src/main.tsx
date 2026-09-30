@@ -7,6 +7,9 @@ import ServicePage from './ServicePage.tsx'
 import AboutPage from './AboutPage.tsx'
 import PortfolioPage from './PortfolioPage.tsx'
 import AdminPage from './AdminPage.tsx'
+import { trackClicks } from './track'
+
+trackClicks()
 
 /* Meta Pixel: перший PageView шле сніпет в index.html, тут — переходи всередині SPA. */
 function PixelPageView() {

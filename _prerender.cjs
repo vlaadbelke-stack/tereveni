@@ -103,9 +103,9 @@ const outFile = (route) => (route === '/' ? path.join(DIST, 'index.html') : path
     // відео в HTML не потрапляє, а його стрім тримає мережу і заважає networkidle
     await page.route(/\.mp4(\?|$)/, (r) => r.abort());
     page.on('pageerror', (e) => errors.push(String(e).slice(0, 120)));
-    /* Піксель Meta: під час збірки не шлемо PageView і не лишаємо в HTML тег fbevents.js,
+    /* Піксель Meta, GA4 і Clarity: під час збірки не шлемо візити і не лишаємо в HTML тег fbevents.js,
        який вставив сніпет, інакше в браузері бібліотека вантажилась би двічі. */
-    await page.route(/facebook\.(net|com)/, (r) => r.abort());
+    await page.route(/facebook\.(net|com)|google-analytics\.com|googletagmanager\.com|clarity\.ms/, (r) => r.abort());
     await page.goto('http://localhost:' + PORT + route, { waitUntil: 'networkidle', timeout: 45000 });
     /* Анімації Framer Motion стартують із opacity/translate — даємо кадрам осісти,
        інакше в HTML впечеться стан «ще не показано». */
@@ -116,7 +116,7 @@ const outFile = (route) => (route === '/' ? path.join(DIST, 'index.html') : path
     await page.waitForTimeout(400);
 
     const html = await page.evaluate(() => {
-      document.querySelectorAll('script[src*="fbevents.js"]').forEach((s) => s.remove());
+      document.querySelectorAll('script[src*="fbevents.js"], script[src*="clarity.ms"]').forEach((s) => s.remove());
       return '<!doctype html>\n' + document.documentElement.outerHTML;
     });
     const info = await page.evaluate(() => ({

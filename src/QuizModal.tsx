@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { checkContact } from './validate';
+import { track } from './track';
 
 // Квіз «Розрахувати вартість» (механіка узгоджена з Олегом 30.07):
 // цін на сайті нема — людина відповідає на 3 питання чіпсами, лишає контакт,
@@ -88,6 +89,7 @@ export default function QuizModal({ slug, onClose }: { slug: string; onClose: ()
         body: JSON.stringify({ name, contact: chk.value, service: quiz.title, answers, hp }),
       });
       if (!r.ok) throw new Error(String(r.status));
+      track('generate_lead', { form: 'quiz', service: quiz.title });
       setSent(true);
     } catch {
       setErr('Не вдалося надіслати. Спробуйте ще раз або напишіть у Telegram.');

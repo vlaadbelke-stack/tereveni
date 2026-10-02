@@ -4,7 +4,7 @@ import LocGallery from './LocGallery';
 import QuizModal from './QuizModal';
 import { MaskTitle, ParallaxBg } from './Motion';
 import { checkContact } from './validate';
-import { track } from './track';
+import { track, utm } from './track';
 import { useWorks, ytThumb, type Work } from './works';
 import { STUDIO_ADDRESS, STUDIO_MAPS_URL } from './studio';
 import { useSeo, PAGE_SEO } from './seo';
@@ -190,7 +190,7 @@ export function ContactForm() {
       const r = await fetch('/api/lead', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, contact: chk.value, types, hp }),
+        body: JSON.stringify({ name, contact: chk.value, types, hp, utm: utm() }),
       });
       if (!r.ok) throw new Error(String(r.status));
       track('generate_lead', { form: 'contact' });

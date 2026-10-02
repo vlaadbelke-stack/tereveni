@@ -46,6 +46,13 @@ export default async function handler(req: any, res: any) {
     }
     if (!Object.keys(answers).length) answers = null;
   }
+  // UTM-мітки реклами: окремим рядком у Telegram і в адмінці, щоб було видно, з якого оголошення заявка
+  if (b.utm && typeof b.utm === 'object' && !Array.isArray(b.utm)) {
+    const u = ['utm_source', 'utm_campaign', 'utm_content']
+      .map((k) => (b.utm[k] ? `${k.slice(4)}=${String(b.utm[k]).slice(0, 80)}` : ''))
+      .filter(Boolean).join(', ');
+    if (u) answers = { ...(answers || {}), 'Реклама:': u };
+  }
 
   try {
     const sql = neon(process.env.DATABASE_URL!);

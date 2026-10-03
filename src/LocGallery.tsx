@@ -145,7 +145,6 @@ export default function LocGallery({ bookUrl }: { bookUrl: string }) {
   });
 
   const [active, setActive] = useState<Slide | null>(null);
-  const [hovered, setHovered] = useState(false);
   const [snapping, setSnapping] = useState(false);
   const [hoverLoc, setHoverLoc] = useState<string | null>(null);
 
@@ -200,10 +199,11 @@ export default function LocGallery({ bookUrl }: { bookUrl: string }) {
     return () => window.clearTimeout(t);
   }, [inView, warm]);
 
-  // Авто-обертання; пауза: поза екраном, ховер мишею над картками, снап + HOLD_MS,
-  // фулскрін, reduced-motion
+  // Авто-обертання; пауза: поза екраном, снап + HOLD_MS, фулскрін, reduced-motion.
+  // Паузи на ховер НЕМА (Влад 3.10, двічі): барабан на всю ширину екрана, курсор
+  // майже завжди над ним — і з паузою він просто стояв після першого ж кліку.
   useEffect(() => {
-    if (!inView || hovered || snapping || active) return;
+    if (!inView || snapping || active) return;
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     let raf = 0;
     let last = performance.now();
@@ -217,7 +217,7 @@ export default function LocGallery({ bookUrl }: { bookUrl: string }) {
     };
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
-  }, [inView, hovered, snapping, active, rotation, faceAngle]);
+  }, [inView, snapping, active, rotation, faceAngle]);
 
   useEffect(() => {
     if (!active) return;
@@ -275,12 +275,7 @@ export default function LocGallery({ bookUrl }: { bookUrl: string }) {
             карток, і при сталій perspective передня картка наближається до камери й
             роздувається (34 картки = 757px замість 576 при сцені 600). Відношення 3.6
             тримає видимий розмір незмінним, скільки б локацій не додали. */}
-        {/* Пауза на ховер — лише мишею і лише над картками (3.10). Раніше слухала всю
-            сцену: курсор на стрілці «›» тримав барабан, а на телефоні дотик емулює
-            mouseenter без mouseleave — і барабан ставав назавжди. */}
-        <div className="lg3-persp" style={{ perspective: `${Math.round(radius * 3.6)}px` }}
-          onPointerEnter={(e) => { if (e.pointerType === 'mouse') setHovered(true); }}
-          onPointerLeave={() => setHovered(false)}>
+        <div className="lg3-persp" style={{ perspective: `${Math.round(radius * 3.6)}px` }}>
           {/* Драг прибрано (Влад 31.07): перехоплював кліки по картках. Керування — стрілки/шкала/клік */}
           <motion.div
             className="lg3-cyl"

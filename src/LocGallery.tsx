@@ -148,13 +148,11 @@ export default function LocGallery({ bookUrl }: { bookUrl: string }) {
   const [snapping, setSnapping] = useState(false);
   const [hoverLoc, setHoverLoc] = useState<string | null>(null);
 
-  // Після ручного перемикання барабан тримає картку HOLD_MS (Влад: «мінімальна») і далі крутиться сам
-  // (Влад 3.10: «натискаєш далі — не крутиться потім сама»). Лічильник відсікає
-  // доводки, які перебив наступний клік: їхній таймер не має зняти паузу новій.
-  const HOLD_MS = 400;
+  // Після ручного перемикання барабан одразу крутиться далі, без паузи (Влад 3.10:
+  // «натискаєш далі — не крутиться потім сама», потім «прибери взагалі паузу»).
+  // Лічильник відсікає доводки, які перебив наступний клік: вони не мають
+  // запустити обертання посеред нової доводки.
   const snapSeq = useRef(0);
-  const holdTimer = useRef(0);
-  useEffect(() => () => window.clearTimeout(holdTimer.current), []);
 
   // Доводка до КАРТКИ найкоротшим шляхом (порожні слоти розриву не ловляться)
   const snapToCard = (i: number, fast = false) => {
@@ -162,12 +160,8 @@ export default function LocGallery({ bookUrl }: { bookUrl: string }) {
     const cur = rotation.get();
     const diff = (((target - cur + 180) % 360) + 360) % 360 - 180;
     const seq = ++snapSeq.current;
-    window.clearTimeout(holdTimer.current);
     setSnapping(true);
-    const done = () => {
-      if (seq !== snapSeq.current) return;
-      holdTimer.current = window.setTimeout(() => setSnapping(false), HOLD_MS);
-    };
+    const done = () => { if (seq === snapSeq.current) setSnapping(false); };
     animate(rotation, cur + diff, fast
       ? { type: 'tween', duration: 0.7, ease: [0.22, 1, 0.36, 1], onComplete: done }
       : { type: 'spring', stiffness: 100, damping: 30, mass: 0.4, onComplete: done });
@@ -199,7 +193,7 @@ export default function LocGallery({ bookUrl }: { bookUrl: string }) {
     return () => window.clearTimeout(t);
   }, [inView, warm]);
 
-  // Авто-обертання; пауза: поза екраном, снап + HOLD_MS, фулскрін, reduced-motion.
+  // Авто-обертання; пауза: поза екраном, поки йде доводка, фулскрін, reduced-motion.
   // Паузи на ховер НЕМА (Влад 3.10, двічі): барабан на всю ширину екрана, курсор
   // майже завжди над ним — і з паузою він просто стояв після першого ж кліку.
   useEffect(() => {

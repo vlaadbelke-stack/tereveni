@@ -134,6 +134,12 @@ h1, h2, h3 { font-weight: 700; letter-spacing: 0; line-height: 1.02; text-transf
 .nav-phone { display: inline-flex; align-items: center; gap: 8px; margin-right: 12px; color: var(--white); font-family: var(--sans); font-weight: 700; font-size: 15px; letter-spacing: .04em; white-space: nowrap; transition: color .2s; }
 .nav-phone svg { color: var(--orange); flex-shrink: 0; }
 .nav-phone:hover { color: var(--orange-2); }
+/* Копіювати номер — маленька іконка поруч (лише ПК) */
+.nav-copy { position: relative; display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; margin: 0 14px 0 -10px; padding: 0; border: 0; border-radius: 7px; background: transparent; color: rgba(242,239,233,0.45); cursor: pointer; transition: color .2s, background .2s; }
+.nav-copy:hover, .nav-copy.ok { color: var(--orange); background: rgba(255,139,0,0.08); }
+.nav-copy-tip { position: absolute; top: calc(100% + 10px); left: 50%; transform: translate(-50%, -4px); white-space: nowrap; padding: 7px 11px; border-radius: 8px; background: rgba(20,20,20,0.96); border: 1px solid rgba(255,255,255,0.12); color: rgba(242,239,233,0.8); font-family: var(--sans); font-weight: 500; font-size: 12.5px; letter-spacing: .02em; line-height: 1; opacity: 0; pointer-events: none; transition: opacity .15s, transform .15s; box-shadow: 0 10px 30px rgba(0,0,0,0.45); z-index: 20; }
+.nav-copy:hover .nav-copy-tip, .nav-copy:focus-visible .nav-copy-tip, .nav-copy.ok .nav-copy-tip { opacity: 1; transform: translate(-50%, 0); }
+.nav-copy.ok .nav-copy-tip { border-color: rgba(255,139,0,0.55); color: var(--white); }
 /* Telegram у нижній панелі — лише на телефоні */
 .sc-tg { display: none; }
 .burger { display: none; flex-direction: column; gap: 5px; background: none; border: none; cursor: pointer; padding: 11px; }
@@ -804,6 +810,7 @@ h1, h2, h3 { font-weight: 700; letter-spacing: 0; line-height: 1.02; text-transf
   .nav-phone { width: 40px; height: 40px; margin-right: 0; justify-content: center; }
   .nav-phone svg { width: 21px; height: 21px; }
   .nav-phone-num { display: none; }
+  .nav-copy { display: none; }
   /* мобілка: заголовок → фото → аргументи */
   .why-split { grid-template-columns: 1fr; grid-template-areas: "photo" "list"; row-gap: 24px; margin-top: 28px; }
   .why-photo { flex: none; min-height: 0; }

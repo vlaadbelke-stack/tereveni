@@ -10,6 +10,7 @@ const META: Record<string, string> = {
   click_telegram: 'Contact',
   click_instagram: 'Contact',
   click_whatsapp: 'Contact',
+  copy_phone: 'Contact',
 }
 
 export function track(event: string, params: Record<string, string> = {}) {

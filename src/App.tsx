@@ -113,6 +113,23 @@ const MENU_CONTACTS = [
 const PhoneIcon = ({ size = 18 }: { size?: number }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.1" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z" /></svg>
 );
+const CopyIcon = () => (
+  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2" /><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" /></svg>
+);
+const CheckIcon = () => (
+  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5" /></svg>
+);
+
+/* Копіювання номера (3.10, ПК): з ноутбука tel: відкриває FaceTime/Skype або нічого,
+   а людина хоче перенести номер у телефон чи Viber. Без пробілів — так його приймає будь-який застосунок. */
+async function copyText(t: string) {
+  try { await navigator.clipboard.writeText(t); return; } catch { /* старий браузер або без https */ }
+  const ta = document.createElement('textarea');
+  ta.value = t; ta.setAttribute('readonly', ''); ta.style.position = 'fixed'; ta.style.opacity = '0';
+  document.body.appendChild(ta); ta.select();
+  try { document.execCommand('copy'); } finally { ta.remove(); }
+}
+
 const TgIcon = ({ size = 20 }: { size?: number }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21.94 4.3 18.7 19.6c-.24 1.07-.88 1.34-1.78.83l-4.92-3.63-2.37 2.28c-.26.26-.48.48-.99.48l.35-5.02 9.13-8.25c.4-.35-.09-.55-.61-.2L6.2 13.2l-4.86-1.52c-1.06-.33-1.08-1.06.22-1.57L20.6 2.74c.88-.33 1.65.2 1.34 1.56z" /></svg>
 );
@@ -352,6 +369,13 @@ export default function App() {
   const [scrolled, setScrolled] = useState(false);
   const [menu, setMenu] = useState(false);
   const [contactOpen, setContactOpen] = useState(false);
+  const [phoneCopied, setPhoneCopied] = useState(false);
+  const copyPhone = async () => {
+    await copyText(PHONE_TEL.replace('tel:', ''));
+    track('copy_phone');
+    setPhoneCopied(true);
+    window.setTimeout(() => setPhoneCopied(false), 1600);
+  };
   const [lightbox, setLightbox] = useState<string | null>(null);
   const [videoCase, setVideoCase] = useState<Work | null>(null);
   // Квіз «Розрахувати вартість»; діплінк для реклами: /?calc=studio|production|outdoor|live
@@ -489,6 +513,10 @@ export default function App() {
           <div className="nav-actions">
             {/* 3.10, Олег: номер на видноті одразу. На ПК — номер текстом, на телефоні — значок біля меню */}
             <a href={PHONE_TEL} className="nav-phone" aria-label={`Подзвонити ${PHONE_FULL}`}><PhoneIcon /><span className="nav-phone-num">{PHONE_TEXT}</span></a>
+            <button type="button" className={`nav-copy ${phoneCopied ? 'ok' : ''}`} onClick={copyPhone} aria-label="Скопіювати номер">
+              {phoneCopied ? <CheckIcon /> : <CopyIcon />}
+              <span className="nav-copy-tip" aria-live="polite">{phoneCopied ? 'Скопійовано' : 'Скопіювати номер'}</span>
+            </button>
             <div className="cdrop-wrap">
               <button className={`btn btn-ghost nav-cta ${contactOpen ? 'on' : ''}`} onClick={() => setContactOpen((o) => !o)}>Написати</button>
               {contactOpen && (

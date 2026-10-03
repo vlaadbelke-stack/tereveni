@@ -26,6 +26,7 @@ export function trackClicks() {
     const h = a.getAttribute('href') || ''
     if (h.startsWith('tel:')) track('click_phone')
     else if (h.includes('t.me/')) track('click_telegram')
+    else if (h.includes('wa.me/')) track('click_whatsapp')
     else if (h.includes('instagram.com/')) track('click_instagram')
     else if (h.includes('cal.com/')) track('click_booking')
   })

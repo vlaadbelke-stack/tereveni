@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Reveal, Brand, SiteFooter, Ico, NavLinks, AUDIENCE, WHY, ContactForm } from './App';
 import { MaskTitle } from './Motion';
-import { STUDIO_ADDRESS, STUDIO_MAPS_URL } from './studio';
+import { STUDIO_ADDRESS, STUDIO_MAPS_URL, TG_URL } from './studio';
 import { useSeo, PAGE_SEO } from './seo';
 
 // Сторінка «Про нас» (Олег, 4 серп): сюди винесено два блоки з головної —
@@ -119,7 +119,7 @@ export default function AboutPage() {
             <h2>Отримайте безкоштовну <span className="box">консультацію</span></h2>
             <p>Розкажіть про ідею — покажемо, як перетворити її на контент, який дивляться. Без зобовʼязань.</p>
             <div className="hero-actions" style={{ justifyContent: 'center' }}>
-              <a href="https://t.me/tereveni_studio" target="_blank" rel="noreferrer" className="btn btn-primary"><span className="dot" /> Написати в Telegram</a>
+              <a href={TG_URL} target="_blank" rel="noreferrer" className="btn btn-primary"><span className="dot" /> Написати в Telegram</a>
             </div>
             {/* 12.08: замість кнопки на /#contact, що викидала на головну */}
             <div className="inner-cta-form"><ContactForm /></div>

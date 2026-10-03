@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { Reveal, Brand, SiteFooter, NavLinks, ContactForm } from './App';
 import { useWorks, ytThumb, type Work } from './works';
 import { useSeo, PAGE_SEO } from './seo';
+import { TG_URL } from './studio';
 
 const PlayIco = ({ s = 20 }: { s?: number }) => (
   <svg width={s} height={s} viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z" /></svg>
@@ -122,7 +123,7 @@ export default function PortfolioPage() {
             <h2>Отримайте безкоштовну <span className="box">консультацію</span></h2>
             <p>Розкажіть про ідею — покажемо, як перетворити її на контент, який дивляться. Без зобовʼязань.</p>
             <div className="hero-actions" style={{ justifyContent: 'center' }}>
-              <a href="https://t.me/tereveni_studio" target="_blank" rel="noreferrer" className="btn btn-primary"><span className="dot" /> Написати в Telegram</a>
+              <a href={TG_URL} target="_blank" rel="noreferrer" className="btn btn-primary"><span className="dot" /> Написати в Telegram</a>
             </div>
             {/* 12.08: замість кнопки на /#contact, що викидала на головну */}
             <div className="inner-cta-form"><ContactForm /></div>

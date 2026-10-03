@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import { Reveal, Brand, SiteFooter, NavLinks, ContactForm } from './App';
 import { SERVICE_PAGES } from './services';
 import { useSeo, SITE_URL } from './seo';
-import { STUDIO_ADDRESS, STUDIO_MAPS_URL } from './studio';
+import { STUDIO_ADDRESS, STUDIO_MAPS_URL, TG_URL } from './studio';
 
 export default function ServicePage() {
   const { slug } = useParams();
@@ -160,7 +160,7 @@ export default function ServicePage() {
             <h2>{data.ctaLine}</h2>
             <p>Консультація безкоштовна, без зобовʼязань. Розкажіть про задачу — підкажемо формат і наступний крок.</p>
             <div className="hero-actions" style={{ justifyContent: 'center' }}>
-              <a href="https://t.me/tereveni_studio" target="_blank" rel="noreferrer" className="btn btn-primary"><span className="dot" /> Написати в Telegram</a>
+              <a href={TG_URL} target="_blank" rel="noreferrer" className="btn btn-primary"><span className="dot" /> Написати в Telegram</a>
             </div>
             {/* 12.08: тут була кнопка на /#contact — вона викидала людину на головну
                 після того, як та дочитала сторінку послуги. Форма тепер на місці. */}

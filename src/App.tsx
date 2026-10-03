@@ -6,7 +6,7 @@ import { MaskTitle, ParallaxBg } from './Motion';
 import { checkContact } from './validate';
 import { track, utm } from './track';
 import { useWorks, ytThumb, type Work } from './works';
-import { STUDIO_ADDRESS, STUDIO_MAPS_URL } from './studio';
+import { STUDIO_ADDRESS, STUDIO_MAPS_URL, PHONE_TEL, PHONE_TEXT, PHONE_FULL, TG_URL, WA_URL } from './studio';
 import { useSeo, PAGE_SEO } from './seo';
 
 /* ---------- helpers ---------- */
@@ -97,12 +97,25 @@ export const Brand = ({ h = 26 }: { h?: number }) => (
 const BOOKING_URL = 'https://cal.com/tereveni-studio-ydalq2/%D0%B1%D1%80%D0%BE%D0%BD%D1%8E%D0%B2%D0%B0%D0%BD%D0%BD%D1%8F-%D1%81%D1%82%D1%83%D0%B4%D1%96%D1%96-%D1%82%D0%B5%D1%80%D0%B5%D0%B2%D0%B5%D0%BD%D1%96';
 const bookProps = { href: BOOKING_URL, target: '_blank' as const, rel: 'noreferrer' };
 
-// Контакти для дропдауна «Зв'язатися» (референс Олега, 29.07); 3D-іконки з бібліотеки
-const CONTACTS = [
-  { k: 'TG', t: 'Telegram', v: 't.me/tereveni_studio', href: 'https://t.me/tereveni_studio', ico: '/3d/telegram.webp' },
+// Дропдаун «Написати» (було «Зв'язатися», референс Олега 29.07; 3.10 — номер винесено
+// в шапку окремо, тож тут лише месенджери). 3D-іконки з бібліотеки, WhatsApp — згенерована 3D у тому ж стилі (3.10).
+const WRITE_CONTACTS = [
+  { k: 'TG', t: 'Telegram', v: PHONE_FULL, href: TG_URL, ico: '/3d/telegram.webp' },
+  { k: 'WA', t: 'WhatsApp', v: PHONE_FULL, href: WA_URL, ico: '/3d/whatsapp.webp' },
   { k: 'IG', t: 'Instagram', v: '@tereveni_studio', href: 'https://instagram.com/tereveni_studio', ico: '/3d/instagram.webp' },
-  { k: 'PH', t: 'Зателефонувати', v: '+38 093 882 46 49', href: 'tel:+380938824649', ico: '/3d/phone-call.webp' },
 ];
+// У мобільному меню — ті самі месенджери плюс дзвінок
+const MENU_CONTACTS = [
+  ...WRITE_CONTACTS,
+  { k: 'PH', t: 'Зателефонувати', v: PHONE_FULL, href: PHONE_TEL, ico: '/3d/phone-call.webp' },
+];
+
+const PhoneIcon = ({ size = 18 }: { size?: number }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.1" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z" /></svg>
+);
+const TgIcon = ({ size = 20 }: { size?: number }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21.94 4.3 18.7 19.6c-.24 1.07-.88 1.34-1.78.83l-4.92-3.63-2.37 2.28c-.26.26-.48.48-.99.48l.35-5.02 9.13-8.25c.4-.35-.09-.55-.61-.2L6.2 13.2l-4.86-1.52c-1.06-.33-1.08-1.06.22-1.57L20.6 2.74c.88-.33 1.65.2 1.34 1.56z" /></svg>
+);
 
 /* ---------- data ---------- */
 // Продуктова лінійка (узгоджено з Олегом 29.07): студія → виїзд → трансляції.
@@ -223,7 +236,7 @@ export function ContactForm() {
       </div>
       <input className="hp-field" tabIndex={-1} autoComplete="off" aria-hidden="true" value={hp} onChange={(e) => setHp(e.target.value)} />
       <button type="submit" disabled={busy} className="btn btn-primary cform-btn"><span className="dot" /> {busy ? 'Надсилаємо…' : 'Надіслати'}</button>
-      {err && <div className="cform-err">{err} <a href="https://t.me/tereveni_studio" target="_blank" rel="noreferrer">Написати в Telegram →</a></div>}
+      {err && <div className="cform-err">{err} <a href={TG_URL} target="_blank" rel="noreferrer">Написати в Telegram →</a></div>}
       <div className="cform-note">Передзвонимо або напишемо у зручний вам месенджер. Без спаму.</div>
     </form>
   );
@@ -270,6 +283,8 @@ export function StickyCTA() {
       <div className="sc-in">
         <div className="sc-msg"><span className="sc-dot" /> <span className="sc-msg-long">Отримайте безкоштовну консультацію — <b>без зобовʼязань</b></span></div>
         <div className="sc-actions">
+          {/* Telegram у панелі — лише на телефоні (на ПК він у «Написати» в шапці) */}
+          <a href={TG_URL} target="_blank" rel="noreferrer" className="sc-tg" aria-label="Написати в Telegram"><TgIcon /></a>
           <a href="#contact" className="btn btn-primary sc-btn"><span className="dot" /> Обговорити проєкт</a>
           <button className="sc-x" onClick={() => setDismissed(true)} aria-label="Закрити">×</button>
         </div>
@@ -472,13 +487,15 @@ export default function App() {
           <a href="#top" aria-label="ТЕРЕВЕНІ"><Brand /></a>
           <NavLinks />
           <div className="nav-actions">
+            {/* 3.10, Олег: номер на видноті одразу. На ПК — номер текстом, на телефоні — значок біля меню */}
+            <a href={PHONE_TEL} className="nav-phone" aria-label={`Подзвонити ${PHONE_FULL}`}><PhoneIcon /><span className="nav-phone-num">{PHONE_TEXT}</span></a>
             <div className="cdrop-wrap">
-              <button className={`btn btn-ghost nav-cta ${contactOpen ? 'on' : ''}`} onClick={() => setContactOpen((o) => !o)}>Зв'язатися</button>
+              <button className={`btn btn-ghost nav-cta ${contactOpen ? 'on' : ''}`} onClick={() => setContactOpen((o) => !o)}>Написати</button>
               {contactOpen && (
                 <>
                   <div className="cdrop-overlay" onClick={() => setContactOpen(false)} />
                   <div className="cdrop">
-                    {CONTACTS.map((c) => (
+                    {WRITE_CONTACTS.map((c) => (
                       <a key={c.k} href={c.href} target={c.href.startsWith('http') ? '_blank' : undefined} rel="noreferrer" onClick={() => setContactOpen(false)}>
                         <img className="cdrop-ico3d" src={c.ico} alt="" width={38} height={38} />
                         <span><span className="cdrop-t">{c.t}</span><span className="cdrop-v">{c.v}</span></span>
@@ -518,7 +535,7 @@ export default function App() {
         <div className="mm-foot">
           <a {...bookProps} onClick={() => setMenu(false)} className="btn btn-primary mm-book">Забронювати студію</a>
           <div className="mm-contacts">
-            {CONTACTS.map((c) => (
+            {MENU_CONTACTS.map((c) => (
               <a key={c.k} href={c.href} target={c.href.startsWith('http') ? '_blank' : undefined} rel="noreferrer" onClick={() => setMenu(false)}>
                 <img className="cdrop-ico3d" src={c.ico} alt="" width={22} height={22} />
                 <span className="mm-ct">{c.t}</span>
@@ -745,7 +762,7 @@ export default function App() {
             </ul>
             <div className="contact-channels">
               <a href="#cform" className="btn btn-primary"><span className="dot" /> Звʼязатись</a>
-              <a href="https://t.me/tereveni_studio" target="_blank" rel="noreferrer" className="btn btn-ghost">Написати в Telegram</a>
+              <a href={TG_URL} target="_blank" rel="noreferrer" className="btn btn-ghost">Написати в Telegram</a>
             </div>
             <div className="contact-meet">
               Або завітайте в студію — <a className="addr-link" href={STUDIO_MAPS_URL} target="_blank" rel="noreferrer">{STUDIO_ADDRESS}</a>

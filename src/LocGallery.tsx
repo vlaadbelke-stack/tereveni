@@ -148,10 +148,10 @@ export default function LocGallery({ bookUrl }: { bookUrl: string }) {
   const [snapping, setSnapping] = useState(false);
   const [hoverLoc, setHoverLoc] = useState<string | null>(null);
 
-  // Після ручного перемикання барабан тримає картку HOLD_MS і далі крутиться сам
+  // Після ручного перемикання барабан тримає картку HOLD_MS (Влад: «мінімальна») і далі крутиться сам
   // (Влад 3.10: «натискаєш далі — не крутиться потім сама»). Лічильник відсікає
   // доводки, які перебив наступний клік: їхній таймер не має зняти паузу новій.
-  const HOLD_MS = 2500;
+  const HOLD_MS = 400;
   const snapSeq = useRef(0);
   const holdTimer = useRef(0);
   useEffect(() => () => window.clearTimeout(holdTimer.current), []);

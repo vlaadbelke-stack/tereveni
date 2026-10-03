@@ -116,6 +116,9 @@ const PhoneIcon = ({ size = 18 }: { size?: number }) => (
 const CopyIcon = () => (
   <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2" /><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" /></svg>
 );
+const ChatIcon = () => (
+  <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" /></svg>
+);
 const CheckIcon = () => (
   <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5" /></svg>
 );
@@ -370,6 +373,14 @@ export default function App() {
   const [menu, setMenu] = useState(false);
   const [contactOpen, setContactOpen] = useState(false);
   const [phoneCopied, setPhoneCopied] = useState(false);
+  // 3.10: на телефоні «Написати» — значок 💬 у шапці, відкриває месенджери й копіювання номера
+  const [writeOpen, setWriteOpen] = useState(false);
+  useEffect(() => {
+    if (!writeOpen) return;
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') setWriteOpen(false); };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [writeOpen]);
   const copyPhone = async () => {
     await copyText(PHONE_TEL.replace('tel:', ''));
     track('copy_phone');
@@ -517,6 +528,7 @@ export default function App() {
               {phoneCopied ? <CheckIcon /> : <CopyIcon />}
               <span className="nav-copy-tip" aria-live="polite">{phoneCopied ? 'Скопійовано' : 'Скопіювати номер'}</span>
             </button>
+            <button type="button" className={`nav-write ${writeOpen ? 'on' : ''}`} onClick={() => setWriteOpen((o) => !o)} aria-label="Написати" aria-expanded={writeOpen} aria-controls="mwrite"><ChatIcon /></button>
             <div className="cdrop-wrap">
               <button className={`btn btn-ghost nav-cta ${contactOpen ? 'on' : ''}`} onClick={() => setContactOpen((o) => !o)}>Написати</button>
               {contactOpen && (
@@ -535,10 +547,26 @@ export default function App() {
             </div>
             {/* «Забронювати» з шапки прибрано (Влад 5.08): дублювало кнопку в героєві,
                 два однакові оранжеві CTA на першому екрані розмивали фокус. */}
-            <button className="burger" onClick={() => setMenu(true)} aria-label="Меню" aria-expanded={menu} aria-controls="mobile-menu"><span /><span /><span /></button>
+            <button className="burger" onClick={() => { setWriteOpen(false); setMenu(true); }} aria-label="Меню" aria-expanded={menu} aria-controls="mobile-menu"><span /><span /><span /></button>
           </div>
         </div>
+        {writeOpen && (
+          <div className="mwrite" id="mwrite">
+            {WRITE_CONTACTS.map((c) => (
+              <a key={c.k} href={c.href} target="_blank" rel="noreferrer" onClick={() => setWriteOpen(false)}>
+                <img className="cdrop-ico3d" src={c.ico} alt="" width={34} height={34} />
+                <span><span className="cdrop-t">{c.t}</span><span className="cdrop-v">{c.v}</span></span>
+              </a>
+            ))}
+            <button type="button" className="mwrite-copy" onClick={async () => { await copyPhone(); window.setTimeout(() => setWriteOpen(false), 900); }}>
+              <span className="mwrite-ico">{phoneCopied ? <CheckIcon /> : <CopyIcon />}</span>
+              <span><span className="cdrop-t" aria-live="polite">{phoneCopied ? 'Скопійовано' : 'Скопіювати номер'}</span><span className="cdrop-v">{PHONE_TEL.replace('tel:', '')}</span></span>
+            </button>
+          </div>
+        )}
       </nav>
+      {/* Затемнення під шапкою — поза .nav, бо backdrop-filter шапки «ловить» fixed-нащадків */}
+      {writeOpen && <div className="mwrite-overlay" onClick={() => setWriteOpen(false)} />}
 
       {/* Мобільне меню: рядки на всю ширину з розділювальними рисками, усе по лівому краю.
           Нумерація 01…05 перегукується з нумерацією послуг на сайті. Рядки заїжджають
